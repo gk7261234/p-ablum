@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <title>p-bulum</title>
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/jquery.validate.js"></script>
+</head>
+<style type="text/css">
+  label.error{
+    color: #f0b;
+  }
+  </style>
+<form id="testForm">
+  <div class="input-group input-group-lg">
+    <span class="input-group-addon" id="sizing-addon1">@</span>
+    <input id="nihao" name="email" data-rule-required="true" data-rule-email="true" data-msg-email="Please enter a valid email address">
+  </div>
+  <!--错误提示-->
+  <div class="error"></div>
+  <button style="margin-top: 50px;margin-left: 500px;" type="submit">submitBtn</button>
+</form>
+
+<!--<div class="input-group">-->
+<!--<span class="input-group-addon" id="sizing-addon2">@</span>-->
+<!--<input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2">-->
+<!--</div>-->
+
+<!--<div class="input-group input-group-sm">-->
+<!--<span class="input-group-addon" id="sizing-addon3">@</span>-->
+<!--<input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon3">-->
+<!--</div>-->
+
+<script type="text/javascript">
+  $("#testForm").validate({
+//    messages: {
+//      email: {
+//        required: 'Enter this!'
+//      }
+//    }
+    errorLabelContainer: $("#testForm div.error")
+  });
+
+</script>
+
+</html>

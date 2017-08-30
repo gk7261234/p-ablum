@@ -1,0 +1,46 @@
+<head>
+    <title>p-bulum</title>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/lunbo/pgwslideshow.min.css">
+    <link rel="stylesheet" href="/css/lunbo/pgwslideshow_light.min.css">
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/js/lunbo/pgwslideshow.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+</head>
+<style>
+    .img-thumbnail {
+        max-width: 50%;
+        margin-left: 351px;
+        margin-top: 25px;
+    }
+</style>
+<ul id="pgwSlideshow">
+</ul>
+<script>
+    $(document).ready(function () {
+      //加载滚动图
+      $.getJSON('/_showImg', function (rs,textStatus) {
+        console.log(rs);
+        var html = "";
+        if (rs.data) {
+          var tmp = rs.data;
+          html += '<li style="list-style:none;"><img src="/images/uploadcache/' + tmp + '" alt=" " class="img-thumbnail"></li>';
+        } else {
+          html += '<li><img src="/images/timg.jpg" class="img-thumbnail"></li>';
+        }
+        $('#pgwSlideshow').html(html);
+
+        $('#pgwSlideshow').pgwSlideshow({
+          mainClassName: 'pgwSlideshowLight', // 用自定义css样式老展现轮播图
+          transitionEffect: 'sliding', // 轮播图切换时动画效果，sliding(滑动效果)，fading(溅退效果)
+          autoSlide: true, // 是否允许轮播图自动按照时间间隔轮播
+          displayList: true,//是否已列表的形式显示缩略图
+          displayControls: true,//是否显示向前向后翻页按钮
+          touchControls: true,//是否支持移动设备触摸翻页操作
+          transitionDuration: 600,//图片切换时间，单位：毫秒
+          intervalDuration: 5000,//显示下一张图片的间隔，该参数需要autoslide为true
+          maxHeight: 350 //最大高度
+        });
+      });
+    })
+</script>
