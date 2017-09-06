@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>记事本</title>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<body>
+<table border="1">
+  <tr>
+    <th>访客ID</th>
+    <th>访客姓名</th>
+    <th>联系方式</th>
+    <th>反馈问题</th>
+    <th>解决方案</th>
+    <th>提交时间</th>
+    <th>操作</th>
+  </tr>
+  <tr>
+    <form onsubmit="return false">
+      <td><input type="text" name="id" value="001"></td>
+      <td><input type="text" name="name" value="李先生"></td>
+      <td><input type="text" name="phone" value="13120987456"></td>
+      <td><input type="text" name="question" value="投资不了"></td>
+      <td><input type="text" name="answer" value="没收到短信，收到就行了"></td>
+      <td><input type="text" name="time" value="2017-02-12 12:12:00"></td>
+      <td><button>保存</button></td>
+    </form>
+  </tr>
+</table>
+<button>新增</button>
+</body>
+<script type="text/javascript">
+  $("button").click(function () {
+    var postDate = {
+      id:$("input[name='id']").val(),
+      name:$("input[name='name']").val(),
+      phone:$("input[name='phone']").val(),
+      question:$("input[name='question']").val(),
+      answer:$("input[name='answer']").val(),
+      time:$("input[name='time']").val()
+    };
+    console.log(postDate);
+    $.ajax({
+      dataType: 'json',
+      url: '/note/_save',
+      type: 'POST',
+      data: postDate,
+      success: function(data) {
+        alert("保存成功");
+//        location.reload();
+      },
+      error: function() {
+        alert("保存失败");
+      }
+    });
+  });
+</script>
+</html>

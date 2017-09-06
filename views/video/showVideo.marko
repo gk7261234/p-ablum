@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>视频</title>
+  <link rel="stylesheet" href="/stylesheets/vadeo.css">
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<body>
+<div id="img" for(info in data.rows) data-id="${info.id}">${info.img_name}</div>
+
+<div class="vid-wrapper">
+  <video controls="controls" autoplay="autoplay">
+    <source src="/video/mov.mp4" type="video/mp4" />
+  </video>
+</div>
+</body>
+<script type="text/javascript">
+$("div").click(function () {
+  var id = $(this).data("id");
+  console.log(id);
+  $.ajax({
+    url: '/video/del/'+id,
+    type: 'get',
+    success: function(data) {
+      console.log(data);
+      alert(data);
+      location.reload();
+    },
+    error: function() {
+      alert("删除失败");
+    }
+  });
+});
+</script>
+</html>
