@@ -16,22 +16,43 @@
     <th>提交时间</th>
     <th>操作</th>
   </tr>
+  <tr for(note in data.noteList)>
+    <td>${note.id}</td>
+    <td>${note.name}</td>
+    <td>${note.phone}</td>
+    <td>${note.question}</td>
+    <td>${note.answer}</td>
+    <td>${note.time}</td>
+    <td>
+      <button disabled>保存</button>
+    </td>
+  </tr>
   <tr>
     <form onsubmit="return false">
-      <td><input type="text" name="id" value="001"></td>
-      <td><input type="text" name="name" value="李先生"></td>
-      <td><input type="text" name="phone" value="13120987456"></td>
-      <td><input type="text" name="question" value="投资不了"></td>
-      <td><input type="text" name="answer" value="没收到短信，收到就行了"></td>
-      <td><input type="text" name="time" value="2017-02-12 12:12:00"></td>
-      <td><button>保存</button></td>
+      <td><input type="text" name="id" value="${data.noteList.length + 1}" disabled></td>
+      <td><input type="text" name="name" value=""></td>
+      <td><input type="text" name="phone" value=""></td>
+      <td><input type="text" name="question" value=""></td>
+      <td><input type="text" name="answer" value=""></td>
+      <td><input type="text" name="time" value="默认当前时间" disabled></td>
+      <td>
+        <button id="save">保存</button>
+      </td>
     </form>
   </tr>
 </table>
-<button>新增</button>
+<!--<a href="/20170907.txt" download="20170907.txt">下载</a>-->
+<button id="exportExcel">下载</button>
 </body>
 <script type="text/javascript">
-  $("button").click(function () {
+  $("#exportExcel").click(function(){
+    console.info("exportExcel");
+    var url =  "/note/download";
+    console.info(url);
+    window.location = url;//这里不能使用get方法跳转，否则下载不成功
+
+  });
+  $("#save").click(function () {
     var postDate = {
       id:$("input[name='id']").val(),
       name:$("input[name='name']").val(),
@@ -48,7 +69,7 @@
       data: postDate,
       success: function(data) {
         alert("保存成功");
-//        location.reload();
+        location.reload();
       },
       error: function() {
         alert("保存失败");
