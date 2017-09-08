@@ -31,6 +31,7 @@
     }
   </style>
   <body>
+  <div id="progressNumber" style="width: 0%; height: 20px; background-color: Red"></div>
     <div id="img"></div>
     <div class="upload-container" style="margin: 10px;">
       <input type="file" name="fileToUpload" id="fileToUpload" class="fileupload"/>
@@ -63,6 +64,20 @@
         alert("132");
       }
 
+      var xhrOnProgress = function (fun) {
+        xhrOnProgress.onprogress = fun;
+        return function () {
+          var xhr = $.ajaxSettings.xhr();
+          if (typeof xhrOnProgress.onprogress !== 'function'){
+            return xhr;
+          }
+          if (xhrOnProgress.onprogress && xhr.upload){
+            xhr.upload.onprogress = xhrOnProgress.onprogress;
+          }
+          return xhr;
+        }
+      }
+
       $('.fileupload').change(function(event) {
         /* Act on the event */
         if ($('.fileupload').val().length) {
@@ -78,6 +93,11 @@
               cache: false,
               contentType: false, //不可缺参数
               processData: false, //不可缺参数
+              xhr:xhrOnProgress(function (e) {
+                //进度条
+                var percent = e.loaded *100 / e.total;
+                $("#progressNumber").css("width",percent);
+              }),
               success: function(data) {
                 saveimg(data);
                 console.log(data);
@@ -88,6 +108,8 @@
                 alert('error');
               }
             });
+          }else {
+            alert("请选择正确格式的图片");
           }
         }
       });

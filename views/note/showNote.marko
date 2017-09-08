@@ -11,8 +11,12 @@
     <th>访客ID</th>
     <th>访客姓名</th>
     <th>联系方式</th>
+    <th>客服渠道</th>
     <th>反馈问题</th>
+    <th>问题描述</th>
     <th>解决方案</th>
+    <th>进展</th>
+    <th>备注</th>
     <th>提交时间</th>
     <th>操作</th>
   </tr>
@@ -20,8 +24,12 @@
     <td>${note.id}</td>
     <td>${note.name}</td>
     <td>${note.phone}</td>
+    <td>${note.channel}</td>
     <td>${note.question}</td>
+    <td>${note.description}</td>
     <td>${note.answer}</td>
+    <td>${note.progress}</td>
+    <td>${note.kfName}</td>
     <td>${note.time}</td>
     <td>
       <button disabled>保存</button>
@@ -32,8 +40,16 @@
       <td><input type="text" name="id" value="${data.noteList.length + 1}" disabled></td>
       <td><input type="text" name="name" value=""></td>
       <td><input type="text" name="phone" value=""></td>
+      <td><select style="width: 100px;" id="channel">
+        <option value="微信">微信</option>
+        <option value="电话">电话</option>
+        <option value="qq">qq</option>
+      </select></td>
       <td><input type="text" name="question" value=""></td>
+      <td><input type="text" name="description" value=""></td>
       <td><input type="text" name="answer" value=""></td>
+      <td><input type="text" name="progress" value=""></td>
+      <td><input type="text" name="kfName" value=""></td>
       <td><input type="text" name="time" value="默认当前时间" disabled></td>
       <td>
         <button id="save">保存</button>
@@ -59,7 +75,12 @@
       phone:$("input[name='phone']").val(),
       question:$("input[name='question']").val(),
       answer:$("input[name='answer']").val(),
-      time:$("input[name='time']").val()
+      time:$("input[name='time']").val(),
+
+      channel: $("#channel").val(),
+      description: $("input[name='description']").val(),
+      progress: $("input[name='progress']").val(),
+      kfName: $("input[name='kfName']").val()
     };
     console.log(postDate);
     $.ajax({
