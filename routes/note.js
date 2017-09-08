@@ -79,7 +79,11 @@ router.post('/_save',function (req, res, next) {
       phone:req.body.phone,
       question:req.body.question,
       answer:req.body.answer,
-      time:getNowTime()
+      time:getNowTime(),
+      channel:req.body.channel,
+      description:req.body.description,
+      progress:req.body.progress,
+      kfName:req.body.kfName
     };
     comments.push(newComment);
     fs.writeFile(pathStr, JSON.stringify(comments, null, 4), (err, data) => {
@@ -114,14 +118,18 @@ router.get("/downLoad",function (req, res, next) {
       {caption: '访客ID', type: 'string'},
       {caption: '访客姓名', type: 'string'},
       {caption: '联系方式', type: 'string'},
+      {caption: '客服渠道', type: 'string'},
       {caption: '反馈问题', type: 'string'},
+      {caption: '问题描述', type: 'string'},
       {caption: '解决方案', type: 'string'},
+      {caption: '进展', type: 'string'},
+      {caption: '备注', type: 'string'},
       {caption: '提交时间', type: 'string'}
     ];
 
     let arr = [];
     for (let comment of comments){
-      let arrComment = [comment.id,comment.name,comment.phone,comment.question,comment.answer,comment.time];
+      let arrComment = [comment.id,comment.name,comment.phone,comment.channel,comment.question,comment.description,comment.answer,comment.progress,comment.kfName,comment.time];
       arr.push(arrComment);
     }
 
