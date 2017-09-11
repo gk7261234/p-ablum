@@ -10,6 +10,7 @@ const nodeExcel = require('excel-export');
 
 const noteTpl = require("../views/note/showNote.marko");
 
+//获取绝对路径
 var resolve = file => path.resolve(__dirname, file);
 
 //获取 年-月-日 当做文件名
@@ -41,8 +42,11 @@ router.get('/', function (req, res, next) {
   let timeStamp = getNowFormatDate();
   let folder = 'note/'+ timeStamp +'.txt';
   let pathStr = resolve(folder);
+  console.log(pathStr);
   let noteList = '';
   if (!fs.existsSync(pathStr)){
+    // 创建文件夹
+    // fs.mkdirSync(pathStr);
     fs.writeFile(pathStr,'[]',function (err,data) {
       if (err){
         console.log("写入失败");
@@ -56,9 +60,9 @@ router.get('/', function (req, res, next) {
       }
       console.log(JSON.parse(data));
       noteList = JSON.parse(data);
-      noteTpl.render({noteList},res);
     })
   }
+  noteTpl.render({noteList},res);
 });
 
 router.post('/_save',function (req, res, next) {

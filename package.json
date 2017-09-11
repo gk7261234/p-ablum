@@ -15,6 +15,7 @@
     "excel-export": "^0.5.1",
     "express": "~4.14.0",
     "ffmpeg": "0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
     "formidable": "1.1.1",
     "gulp-live-server": "0.0.31",
     "gulp-nodemon": "^2.2.1",
