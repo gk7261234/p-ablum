@@ -9,6 +9,7 @@ const nodeExcel = require('excel-export');
 // const COMMENTS_FILE = "E:/MyProject/p-ablum/public/note/content.txt";
 
 const noteTpl = require("../views/note/showNote.marko");
+const noteListTpl = require("../views/note/noteList.marko");
 
 //获取绝对路径
 var resolve = file => path.resolve(__dirname, file);
@@ -25,7 +26,8 @@ function getNowFormatDate() {
   if (strDate >= 0 && strDate <= 9) {
     strDate = "0" + strDate;
   }
-  let currentdate = date.getFullYear() + month + strDate;
+  let year = date.getFullYear();
+  let currentdate = `${year}${month}${strDate}`;
   return currentdate;
 }
 
@@ -35,15 +37,36 @@ function getNowTime() {
   let seperator = ":";
   let currentdate = date.getHours() + seperator + date.getMinutes() + seperator + date.getSeconds();
   return currentdate;
-
 }
 
+
+/**
+ * 客服记录列表
+ */
+router.get('/list',function (req, res, next) {
+  let folderName = resolve('note');
+  fs.readdir(folderName,function (err,files) {
+    let fileArr = [];
+    if (err){
+      console.log(err);
+    }else{
+      console.log(files);
+      for (fil of files){
+        let filName = fil.substring(0,8);
+        fileArr.push(filName);
+      }
+    }
+    noteListTpl.render({fileArr},res);
+  });
+
+});
+
 router.get('/', function (req, res, next) {
-  let timeStamp = getNowFormatDate();
+  let noteList = '';
+  let fileName = req.query.fileName;
+  let timeStamp = fileName?fileName:getNowFormatDate();
   let folder = 'note/'+ timeStamp +'.txt';
   let pathStr = resolve(folder);
-  console.log(pathStr);
-  let noteList = '';
   if (!fs.existsSync(pathStr)){
     // 创建文件夹
     // fs.mkdirSync(pathStr);
@@ -60,11 +83,14 @@ router.get('/', function (req, res, next) {
       }
       console.log(JSON.parse(data));
       noteList = JSON.parse(data);
+      noteTpl.render({noteList,fileName},res);
     })
   }
-  noteTpl.render({noteList},res);
 });
 
+/**
+ * 提交内容
+ */
 router.post('/_save',function (req, res, next) {
   console.log(req.body);
   let timeStamp = getNowFormatDate();
@@ -147,6 +173,6 @@ router.get("/downLoad",function (req, res, next) {
 
   });
 
-})
+});
 
 module.exports = router;

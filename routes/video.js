@@ -48,9 +48,8 @@ router.get("/del/:id",function (req, res) {
 //显示项目
 router.get("/menu",function (req, res) {
   let fileName = resolve('video');
-  // let stats = fs.lstatSync(fileName);
-  // console.log(stats);
-  let len='';
+  let imageName = resolve('screenshots');
+  var len='',pathFile='',imagePath='';
   //读取该文件夹下面的所有文件
   fs.readdir(fileName,function (err,filse) {
     if (err){
@@ -59,35 +58,21 @@ router.get("/menu",function (req, res) {
       console.log(filse);
       console.log(filse.length);
       len = filse.length;
-      let pathFile = fileName+"\\"+filse[0];
+      pathFile = fileName+"\\"+filse[0];
       console.log(pathFile);
-      let pro = new ffmpeg({source:pathFile})
-        .withSize('300x300')
-        .takeScreenshots({
-          count:2,
-          timestamps:['50%'],
-          fileName:'thumbnail-at-%s-seconds.png',
+      ffmpeg(pathFile)
+        .screenshots({
+          timestamps: ['50%'],
+          // filename: 'thumbnail-at-%s-seconds.png',
+          filename: 'mov.png',
           size: '320x240',
-          folder: './screenshots/'
-        },function (err,filenames) {
-        if (err){
-          console.log(err);
-        }else {
-          console.log(filenames);
-        }
-
-        })
-
-      // ffmpeg(pathFile)
-      //   .screenshots({
-      //     timestamps: ['50%'],
-      //     filename: 'thumbnail-at-%s-seconds.png',
-      //     size: '320x240',
-      //     folder: './screenshots/'
-      //   });
+          folder: imageName
+        });
+         imagePath = imageName +'\\'+ 'mov.png';
+         console.log(imagePath);
+      videoMenuTpl.render({len,pathFile,imagePath},res);
     }
-    videoMenuTpl.render({len},res);
-  })
+  });
 });
 
 

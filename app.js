@@ -14,6 +14,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'routes/note')));
+app.use(express.static(path.join(__dirname, 'routes/video')));
+app.use(express.static(path.join(__dirname, 'routes/screenshots')));
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');

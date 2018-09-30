@@ -8,18 +8,20 @@ var browserSync = require('browser-sync').create();
 var reload = browserSync.reload;
 var nodemon = require('gulp-nodemon');
 
-//这个可以让express启动
+//监控文件改动插件及实现方法
+
+//① gulp-nodemon
 gulp.task("node", function () {
   nodemon({
-    script: './bin/www',
-    ext: 'js marko',
+    script: './bin/www', //q启动地址
+    ext: 'js marko',     //监控文件
     env: {
-      'NODE_ENV': 'development'
+      'NODE_ENV': 'development' //运行环境
     }
   })
 });
 
-
+//② browse-sync(gulp 推荐)
 gulp.task('server', ["node"], function () {
   var files = [
     'views/**/*.marko',
@@ -38,6 +40,7 @@ gulp.task('server', ["node"], function () {
   gulp.watch(files).on("change", reload);
 });
 
+//③ 目前我们项目中应用的
 gulp.task('server1',function () {
   var server = gls.new(
     ['--harmony', 'bin/www'],

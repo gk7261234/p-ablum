@@ -31,105 +31,110 @@
     }
   </style>
   <body>
+  <!--上传进度条-->
   <div id="progressNumber" style="width: 0%; height: 20px; background-color: Red"></div>
-    <div id="img"></div>
-    <div class="upload-container" style="margin: 10px;">
-      <input type="file" name="fileToUpload" id="fileToUpload" class="fileupload"/>
-    </div>
-
-    <script>
-      $(document).ready(function () {
-//        $('.upload-container').mouseover(function() {
-//          $('.delete').css('display', 'block');
-//        }).mouseout(function(){
-//          $('.delete').css('display', 'none');
-//        });
-        $.getJSON('/img/_showImg', function (rs,textStatus) {
-          console.log(rs);
-          var _html = "";
-          if (rs.data.length>0) {
-            for (let i=0;i<rs.data.length;i++){
-              var tmp = rs.data[i].userName;
-              _html += '<div class="imgWrapper img-thumbnail">';
-              _html += '<img src="/images/uploadcache/' + tmp + '" width="180" height="205">';
-              _html += '<div class="delete" onclick="test()">删除</div>';
-              _html += '</div>';
-            }
+  <div id="img"></div>
+  <div class="upload-container" style="margin: 10px;">
+    <input type="file" name="fileToUpload" id="fileToUpload" class="fileupload"/>
+  </div>
+  </body>
+  <script>
+    $(document).ready(function () {
+      $.getJSON('/img/_showImg', function (rs,textStatus) {
+        var _html = "";
+        if (rs.data.length>0) {
+          for (let i=0;i<rs.data.length;i++){
+            var tmp = rs.data[i].userName;
+            var id = rs.data[i].id;
+            _html += '<div class="imgWrapper img-thumbnail">';
+            _html += '<img src="/images/uploadcache/' + tmp + '" width="180" height="205">';
+            _html += '<div class="delete" onclick="removeList('+id+')" >删除</div>';
+            _html += '</div>';
           }
-          $("#img").html(_html);
-        });
+        }
+        $("#img").html(_html);
       });
+    });
 
-      function test() {
-        alert("132");
-      }
+    function removeList(id) {
+      $.ajax({
+        url:"/img/delete/"+id,
+        type:"get",
+        success: function(data) {
+          alert(data);
+          location.reload();
+        },
+        error: function() {
+          alert("删除失败");
+        }
+      })
+    }
 
-      var xhrOnProgress = function (fun) {
-        xhrOnProgress.onprogress = fun;
-        return function () {
-          var xhr = $.ajaxSettings.xhr();
-          if (typeof xhrOnProgress.onprogress !== 'function'){
-            return xhr;
-          }
-          if (xhrOnProgress.onprogress && xhr.upload){
-            xhr.upload.onprogress = xhrOnProgress.onprogress;
-          }
+    //xmlhttprequest 绑定监听事件
+    var xhrOnProgress = function (fun) {
+      console.log(fun);
+      xhrOnProgress.onprogress = fun;
+      return function () {
+        var xhr = $.ajaxSettings.xhr();
+        if (typeof xhrOnProgress.onprogress !== 'function'){
           return xhr;
         }
+        if (xhrOnProgress.onprogress && xhr.upload){
+          xhr.upload.onprogress = xhrOnProgress.onprogress;
+        }
+        return xhr;
       }
+    };
 
-      $('.fileupload').change(function(event) {
-        /* Act on the event */
-        if ($('.fileupload').val().length) {
-          var fileName = $('.fileupload').val();
-          var extension = fileName.substring(fileName.lastIndexOf('.'), fileName.length).toLowerCase();
-          if (extension == ".jpg" || extension == ".png") {
-            var data = new FormData();
-            data.append('upload', $('#fileToUpload')[0].files[0]);
-            $.ajax({
-              url: '/img/_upload',
-              type: 'POST',
-              data: data,
-              cache: false,
-              contentType: false, //不可缺参数
-              processData: false, //不可缺参数
-              xhr:xhrOnProgress(function (e) {
-                //进度条
-                var percent = e.loaded *100 / e.total;
-                $("#progressNumber").css("width",percent);
-              }),
-              success: function(data) {
-                saveimg(data);
-                console.log(data);
-                alert(data);
-              },
-              error: function() {
-                console.log('error');
-                alert('error');
-              }
-            });
-          }else {
-            alert("请选择正确格式的图片");
-          }
+    $('.fileupload').change(function(event) {
+      if ($('.fileupload').val().length) {
+        var fileName = $('.fileupload').val();
+        var extension = fileName.substring(fileName.lastIndexOf('.'), fileName.length).toLowerCase();
+        if (extension == ".jpg" || extension == ".png") {
+          var data = new FormData();
+          data.append('upload', $('#fileToUpload')[0].files[0]);
+          $.ajax({
+            url: '/img/_upload',
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false, //不可缺参数
+            processData: false, //不可缺参数
+            xhr:xhrOnProgress(function (e) {
+              //进度条
+              var percent = e.loaded *100 / e.total;
+              $("#progressNumber").css("width",percent);
+            }),
+            success: function(data) {
+              saveimg(data);
+              alert("上传成功");
+            },
+            error: function() {
+              console.log('error');
+              alert('上传失败');
+            }
+          });
+        }else {
+          alert("请选择正确格式的图片");
+        }
+      }
+    });
+    function saveimg(data) {
+      var name;
+      name = data.msg;
+      $.ajax({
+        url: '/img/_add',
+        type: 'get',
+        data: {name:name},
+        success: function(data) {
+          location.reload();
+          console.log('success');
+        },
+        error: function() {
+          console.log('保存失败');
         }
       });
-      function saveimg(data) {
-        var name;
-        name = data.msg;
-        $.ajax({
-          url: '/img/_add',
-          type: 'get',
-          data: {name:name},
-          success: function(data) {
-            location.reload();
-            console.log('success');
-          },
-          error: function() {
-            console.log('error');
-          }
-        });
 
-      }
-    </script>
-  </body>
+    }
+  </script>
 </html>

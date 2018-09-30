@@ -5,6 +5,13 @@
   <title>记事本</title>
   <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
+<style>
+  input{
+    width: 100%;
+    border-style: none;
+    outline:none
+  }
+</style>
 <body>
 <table border="1">
   <tr>
@@ -22,7 +29,7 @@
   </tr>
   <tr for(note in data.noteList)>
     <td>${note.id}</td>
-    <td>${note.name}</td>
+    <td contentEditable="true">${note.name}</td>
     <td>${note.phone}</td>
     <td>${note.channel}</td>
     <td>${note.question}</td>
@@ -32,7 +39,7 @@
     <td>${note.kfName}</td>
     <td>${note.time}</td>
     <td>
-      <button disabled>保存</button>
+      <button>修改</button>
     </td>
   </tr>
   <tr>
@@ -61,6 +68,8 @@
 <button id="exportExcel">下载</button>
 </body>
 <script type="text/javascript">
+
+  //下载文件
   $("#exportExcel").click(function(){
     console.info("exportExcel");
     var url =  "/note/download";
@@ -68,6 +77,23 @@
     window.location = url;//这里不能使用get方法跳转，否则下载不成功
 
   });
+
+  //验证提交数据
+  function validate(data) {
+    var len = 7;
+    if (data){
+      for (let i in data){
+        if (!data[i]){
+          len--;
+        }
+      }
+      return len==0?true:false;
+    }else {
+      return false;
+    }
+  }
+
+  //提交数据
   $("#save").click(function () {
     var postDate = {
       id:$("input[name='id']").val(),
@@ -76,13 +102,17 @@
       question:$("input[name='question']").val(),
       answer:$("input[name='answer']").val(),
       time:$("input[name='time']").val(),
-
       channel: $("#channel").val(),
       description: $("input[name='description']").val(),
       progress: $("input[name='progress']").val(),
       kfName: $("input[name='kfName']").val()
     };
-    console.log(postDate);
+
+    if (validate(postDate)){
+      alert("提交信息不能为空");
+      return;
+    }
+
     $.ajax({
       dataType: 'json',
       url: '/note/_save',

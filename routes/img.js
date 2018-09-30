@@ -1,23 +1,25 @@
 /**
  * Created by GK on 2017/8/29.
  */
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var formidable = require('formidable');
-var fs = require('fs');
-var cacheFolder = 'public/images/uploadcache/';
+const formidable = require('formidable');
+const fs = require('fs');
+const db = require('./db.js');
+
+const cacheFolder = 'public/images/uploadcache/';
 
 // 导入MySQL模块
-var mysql = require('mysql');
-var dbConfig = require('../config/mysql');
-var userSQL = require('../config/usersql');
+const mysql = require('mysql');
+const dbConfig = require('../config/mysql');
+const userSQL = require('../config/usersql');
 
 
-var showImgTemplate = require('../views/img/showImg.marko');
+const showImgTemplate = require('../views/img/showImg.marko');
 
 // 使用DBConfig.js的配置信息创建一个MySQL连接池
-var pool = mysql.createPool( dbConfig.mysql );
+const pool = mysql.createPool( dbConfig.mysql );
 // 响应一个JSON数据
 var responseJSON = function (res, ret) {
   if(typeof ret === 'undefined') {
@@ -60,23 +62,15 @@ router.get('/_add', function(req, res, next){
           msg:'增加成功'
         };
       }
-
       // 以json形式，把操作结果返回给前台页面
       responseJSON(res, result);
-
       // 释放连接
       connection.release();
-
     });
   });
 });
 
 router.post('/_upload', (req, res) => {
-  // var currentUser = req.session.user;
-  // var userDirPath =cacheFolder+ currentUser.id;
-  // if (!fs.existsSync(userDirPath)) {
-  //   fs.mkdirSync(userDirPath);
-  // }
   var form = new formidable.IncomingForm(); //创建上传表单
   form.encoding = 'utf-8'; //设置编辑
   form.uploadDir = cacheFolder; //设置上传目录
@@ -122,6 +116,21 @@ router.post('/_upload', (req, res) => {
     }
   });
 });
+
+//删除图片
+router.get('/delete/:id',function (req, res, next) {
+  let id = req.params.id;
+  console.log(id);
+  let delStr = `delete from user where id=${id}`;
+  db.query(delStr, function (err, rows) {
+    if (err){
+      res.send("删除失败");
+    }else{
+      res.send("删除成功");
+    }
+  })
+
+})
 
 
 module.exports = router;
